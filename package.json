@@ -1,0 +1,22 @@
+{
+  "name": "endless-channels-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BIoTws/endless-channels-example.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BIoTws/endless-channels-example/issues"
+  },
+  "homepage": "https://github.com/BIoTws/endless-channels-example#readme",
+  "dependencies": {
+    "biot-core": "^0.1.5"
+  }
+}
