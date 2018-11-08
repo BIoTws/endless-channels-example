@@ -7,7 +7,7 @@ async function start() {
 	
 	const autoReNewChannels = new AutoReNewChannels(wallets[0], 20000, 60);
 	
-	autoReNewChannels.events.on('newChannel', async (objInfo) => {
+	autoReNewChannels.events.on('request_approve_channel', async (objInfo) => {
 		console.error('new Channel: ', objInfo);
 		autoReNewChannels.events.on('error', (error, id) => {
 			console.error('channelError', id, error);
