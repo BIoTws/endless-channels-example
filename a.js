@@ -1,47 +1,38 @@
 const core = require('biot-core');
-const AutoReNewChannels = require('biot-core/lib/AutoReNewChannels');
+const AutoRenewableChannel = require('biot-core/lib/AutoRenewableChannel');
 
-let peerPairingCode = 'AkibUjffrMVjFBQ/wW76gx+3J/iQtMyzrvG3/dYIQMcg@byteball.org/bb-test#test';
-let peerDeviceAddress = '0ECDNM2P7HSTBWCSAZNQA4W65USHXUAXZ';
+let peerPairingCode = 'A4xBDRF9usGr2LTaXV1f5ct14irSo3gyl5dz3rCVoSS0@byteball.org/bb-test#test';
+let peerDeviceAddress = '0PEG7SDXYID3QPE5TUG4L4MIBFFGEYAMR';
 
 async function start() {
-	const device = require('byteballcore/device');
-	
 	await core.init('test');
-	let myDeviceAddress = device.getMyDeviceAddress();
 	let wallets = await core.getMyDeviceWallets();
 	
 	await core.addCorrespondent(peerPairingCode);
-	
-	const autoReNewChannels = new AutoReNewChannels(wallets[0], 20000, 60);
-	
-	await autoReNewChannels.init({
-		walletId: wallets[0],
-		myDeviceAddress,
-		peerDeviceAddress,
-		peerAddress: null,
-		myAmount: 100,
-		peerAmount: 100,
-		age: 10
+	let init = false;
+	const autoRenewableChannel = new AutoRenewableChannel(wallets[0], peerDeviceAddress, 20000, 2);
+	autoRenewableChannel.init();
+	autoRenewableChannel.events.on('start', async (id) => {
+		console.error('id: ', id);
+		if (!init) {
+			setInterval(async () => {
+				await autoRenewableChannel.transfer(37);
+			}, 10000);
+			await autoRenewableChannel.transfer(37);
+			init = true;
+		}
 	});
-	autoReNewChannels.events.on('error', (error, id) => {
-		console.error('channelError', id, error);
+	autoRenewableChannel.events.on('changed_step', async (step) => {
+		console.error('step: ', step);
 	});
-	autoReNewChannels.events.on('start', async (id) => {
-		console.error('channel start:', id);
-		setInterval(async () => {
-			console.error('transfer', await autoReNewChannels.transfer(30));
-		}, 10000);
-	});
-	autoReNewChannels.events.on('start_next', async (id) => {
-		console.error('*********\nstart_next:', id, '\n********');
-	});
-	autoReNewChannels.events.on('changed_step', (step, id) => {
-		console.error('changed_step: ', step, id);
-	});
-	autoReNewChannels.events.on('new_transfer', async (amount, message, id) => {
-		console.error('new_transfer: ', amount, message, id);
-	});
+	await autoRenewableChannel.openNewChannel({
+			walletId: wallets[0],
+			peerAddress: null,
+			myAmount: 100,
+			peerAmount: 100,
+			age: 10
+		}
+	);
 }
 
 start().catch(console.error);
