@@ -13,7 +13,7 @@ async function start() {
 	});
 	autoRenewableChannel.events.on('request_approve_channel', async (objInfo) => {
 		console.error('new Channel: ', objInfo);
-		console.error(await autoRenewableChannel.approve(objInfo.index));
+		console.error(await autoRenewableChannel.approve(objInfo.id));
 	});
 }
 
